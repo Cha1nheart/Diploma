@@ -1,0 +1,41 @@
+Thumbs.db*
+.DS_Store
+HELP.md
+.gradle
+build/classes
+build/downloads
+build/generated
+build/lombok
+build/test-results
+build/tmp
+data
+
+### STS ###`
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings
+.springBeans
+.sts4-cache
+
+### NetBeans ###
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+
+### IntelliJ IDEA ###
+.idea
+*.iws
+*.iml
+*.ipr
+out/
+
+### Exclusions ###
+!**/gradle/**
+!**/src/main/**
+!**/src/test/**
+!**/gate-simulator/**
+!**/build/reports/tests/test/**
