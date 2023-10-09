@@ -19,9 +19,8 @@ class TourPurchaseTest {
         open("http://localhost:8080");
     }
 
-//    Позитивные проверки для валидных карт(первая - "4444444444444441", вторая - "4444444444444442").
-
 //    Обычные покупки тура.
+//    Позитивные сценарии проверки для валидных карт(первая - "4444444444444441", вторая - "4444444444444442").
 
     @Test
     @DisplayName("Should successfully approve operation for the first card") /* Первая карта. */
@@ -49,37 +48,7 @@ class TourPurchaseTest {
         approvedByTheBankNotification.shouldBe(Condition.visible, Duration.ofSeconds(20));
     }
 
-//    Покупка тура в кредит
-
-    @Test
-    @DisplayName("Should successfully approve credit purchase for the first card") /* Первая карта. */
-    void shouldSuccessfullyApproveCreditPurchaseFirstCard() {
-        creditTourPurchaseButton.click();
-        cardNumberField.setValue(firstCardNumber);
-        monthField.setValue(generateMonth());
-        yearField.setValue(validYear);
-        holderField.setValue(generateHolder());
-        cvcField.setValue(generateCVC());
-        continueButton.click();
-        approvedByTheBankNotification.shouldBe(Condition.visible, Duration.ofSeconds(20));
-    }
-
-    @Test
-    @DisplayName("Should successfully approve credit purchase operation for the second card") /* Вторая карта. */
-    void shouldSuccessfullyApproveCreditPurchaseSecondCard() {
-        creditTourPurchaseButton.click();
-        cardNumberField.setValue(secondCardNumber);
-        monthField.setValue(generateMonth());
-        yearField.setValue(validYear);
-        holderField.setValue(generateHolder());
-        cvcField.setValue(generateCVC());
-        continueButton.click();
-        approvedByTheBankNotification.shouldBe(Condition.visible, Duration.ofSeconds(20));
-    }
-
-//    Негативные сценарии.
-
-//    Обычные покупка тура.
+//    Негативные сценарии проверки для обычной покупки тура.
 
     @Test
     @DisplayName("Should decline invalid format for the card number field") /* Поле "Карта" не заполнено полностью. */
@@ -198,7 +167,35 @@ class TourPurchaseTest {
         declinedByTheBankNotification.shouldBe(Condition.visible, Duration.ofSeconds(20));
     }
 
-//    Негативные проверки покупки тура в кредит
+//    Позитивные сценарии проверки для покупки тура в кредит.
+
+    @Test
+    @DisplayName("Should successfully approve credit purchase for the first card") /* Первая карта. */
+    void shouldSuccessfullyApproveCreditPurchaseFirstCard() {
+        creditTourPurchaseButton.click();
+        cardNumberField.setValue(firstCardNumber);
+        monthField.setValue(generateMonth());
+        yearField.setValue(validYear);
+        holderField.setValue(generateHolder());
+        cvcField.setValue(generateCVC());
+        continueButton.click();
+        approvedByTheBankNotification.shouldBe(Condition.visible, Duration.ofSeconds(20));
+    }
+
+    @Test
+    @DisplayName("Should successfully approve credit purchase operation for the second card") /* Вторая карта. */
+    void shouldSuccessfullyApproveCreditPurchaseSecondCard() {
+        creditTourPurchaseButton.click();
+        cardNumberField.setValue(secondCardNumber);
+        monthField.setValue(generateMonth());
+        yearField.setValue(validYear);
+        holderField.setValue(generateHolder());
+        cvcField.setValue(generateCVC());
+        continueButton.click();
+        approvedByTheBankNotification.shouldBe(Condition.visible, Duration.ofSeconds(20));
+    }
+
+//    Негативные сценарии проверки для покупки тура в кредит.
 
     @Test
     @DisplayName("Should decline invalid format for the card number field, credit purchase") /* Поле "Карта" не заполнено полностью. */
