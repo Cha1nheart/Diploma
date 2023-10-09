@@ -13,6 +13,9 @@ import static com.codeborne.selenide.Selenide.$$;
 public class DataGenerator {
 
     private static final Faker faker = new Faker(new Locale("ru_RU"));
+
+//    Переменные для читабельности тестов: xpath пути к кнопкам, полям и уведомлениям.
+
     public static SelenideElement cardNumberField = $$("[class=\'input__inner\']")
             .findBy(Condition.exactText("Номер карты"))
             .find("[class=\'input__control\']");
@@ -40,12 +43,17 @@ public class DataGenerator {
             .findBy(Condition.exactText("Неверно указан срок действия карты"));
     public static SelenideElement expiredCardNotification = $$("[class=\'input__sub\']")
             .findBy(Condition.exactText("Истёк срок действия карты"));
+
+//    Переменные дата класса: используются в методах.
+
     public static String firstCardNumber = "4444444444444441";
     public static String secondCardNumber = "4444444444444442";
     public static String currentYear = LocalDate.now().format(DateTimeFormatter.ofPattern("yy"));
     public static String currentMonth = LocalDate.now().format(DateTimeFormatter.ofPattern("MM"));
     public static int currentMonthInt = Integer.parseInt(LocalDate.now().format(DateTimeFormatter.ofPattern("MM")));
     public static int currentYearInt = Integer.parseInt(LocalDate.now().format(DateTimeFormatter.ofPattern("yy")));
+
+//    Методы дата класса: возвращают различные значения для полей.
 
     public static String generateInvalidCardNumberFormat() { /* Возвращает 15 случайных цифр. */
         String invalidCardNumberFormat = faker.numerify("###############");
