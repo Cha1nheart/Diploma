@@ -8,6 +8,7 @@ build/generated
 build/lombok
 build/test-results
 build/tmp
+build/reports
 data
 
 ### STS ###`
@@ -38,4 +39,3 @@ out/
 !**/src/main/**
 !**/src/test/**
 !**/gate-simulator/**
-!**/build/reports/tests/test/**

@@ -1,14 +1,45 @@
 package ru.netology.TourPurchase.data;
 
+import com.codeborne.selenide.Condition;
+import com.codeborne.selenide.SelenideElement;
 import com.github.javafaker.Faker;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Locale;
 
+import static com.codeborne.selenide.Selenide.$$;
+
 public class DataGenerator {
 
     private static final Faker faker = new Faker(new Locale("ru_RU"));
+    public static SelenideElement cardNumberField = $$("[class=\'input__inner\']")
+            .findBy(Condition.exactText("Номер карты"))
+            .find("[class=\'input__control\']");
+    public static SelenideElement monthField = $$("[class=\'input-group__input-case\']")
+            .findBy(Condition.exactText("Месяц"))
+            .find("[class=\'input__control\']");
+    public static SelenideElement yearField = $$("[class=\'input-group__input-case\']")
+            .findBy(Condition.exactText("Год"))
+            .find("[class=\'input__control\']");
+    public static SelenideElement holderField = $$("[class=\'input-group__input-case\']")
+            .findBy(Condition.exactText("Владелец"))
+            .find("[class=\'input__control\']");
+    public static SelenideElement cvcField = $$("[class=\'input-group__input-case\']")
+            .findBy(Condition.exactText("CVC/CVV"))
+            .find("[class=\'input__control\']");
+    public static SelenideElement continueButton = $$("[role=\'button\']")
+            .findBy(Condition.exactText("Продолжить"));
+    public static SelenideElement approvedByTheBankNotification = $$("[class=\'notification__content\']")
+            .findBy(Condition.exactText("Операция одобрена Банком."));
+    public static SelenideElement declinedByTheBankNotification = $$("[class=\'notification__content\']")
+            .findBy(Condition.exactText("Ошибка! Банк отказал в проведении операции."));
+    public static SelenideElement wrongFormatNotification = $$("[class=\'input__sub\']")
+            .findBy(Condition.exactText("Неверный формат"));
+    public static SelenideElement invalidCardExpirationDateNotification = $$("[class=\'input__sub\']")
+            .findBy(Condition.exactText("Неверно указан срок действия карты"));
+    public static SelenideElement expiredCardNotification = $$("[class=\'input__sub\']")
+            .findBy(Condition.exactText("Истёк срок действия карты"));
     public static String firstCardNumber = "4444444444444441";
     public static String secondCardNumber = "4444444444444442";
     public static String currentYear = LocalDate.now().format(DateTimeFormatter.ofPattern("yy"));
