@@ -44,7 +44,7 @@ public class DataGenerator {
     public static SelenideElement expiredCardNotification = $$("[class=\'input__sub\']")
             .findBy(Condition.exactText("Истёк срок действия карты"));
 
-//    Переменные дата класса: используются в методах.
+//    Переменные дата класса.
 
     public static String firstCardNumber = "4444444444444441";
     public static String secondCardNumber = "4444444444444442";
