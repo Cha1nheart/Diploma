@@ -1,18 +1,26 @@
 package ru.netology.TourPurchase.test;
 
 import com.codeborne.selenide.Condition;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import com.codeborne.selenide.logevents.SelenideLogger;
+import io.qameta.allure.selenide.AllureSelenide;
+import org.junit.jupiter.api.*;
 
 import java.time.Duration;
 
 import static com.codeborne.selenide.Selenide.*;
 import static ru.netology.TourPurchase.data.DataGenerator.*;
-import static ru.netology.TourPurchase.page.CreditTourPurchasePage.*;
 import static ru.netology.TourPurchase.page.TourPurchasePage.*;
 
 class TourPurchaseTest {
+
+    @BeforeAll
+    static void setUpAll() {
+        SelenideLogger.addListener("allure", new AllureSelenide());
+    }
+    @AfterAll
+    static void tearDownAll() {
+        SelenideLogger.removeListener("allure");
+    }
 
     @BeforeEach
     void setup() {
