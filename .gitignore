@@ -9,6 +9,8 @@ build/lombok
 build/test-results
 build/tmp
 build/reports
+build/allure
+build/allure-results
 data
 
 ### STS ###`
