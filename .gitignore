@@ -2,15 +2,7 @@ Thumbs.db*
 .DS_Store
 HELP.md
 .gradle
-build/classes
-build/downloads
-build/generated
-build/lombok
-build/test-results
-build/tmp
-build/reports
-build/allure
-build/allure-results
+build
 data
 
 ### STS ###`
