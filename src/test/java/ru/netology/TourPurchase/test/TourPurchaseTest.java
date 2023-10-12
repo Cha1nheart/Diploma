@@ -175,4 +175,6 @@ class TourPurchaseTest {
         declinedByTheBankNotification.shouldBe(Condition.visible, Duration.ofSeconds(20));
     }
 
+
+
 }
