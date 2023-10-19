@@ -33,3 +33,4 @@ out/
 !**/src/main/**
 !**/src/test/**
 !**/gate-simulator/**
+!**/build/allure-results/**

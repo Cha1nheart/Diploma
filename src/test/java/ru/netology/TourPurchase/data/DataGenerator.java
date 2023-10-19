@@ -46,24 +46,25 @@ public class DataGenerator {
 
 //    Переменные дата класса.
 
-    public static String firstCardNumber = "4444444444444441";
-    public static String secondCardNumber = "4444444444444442";
+    public static String firstCardNumber = "4444 4444 4444 4441";
+    public static String secondCardNumber = "4444 4444 4444 4442";
     public static String currentYear = LocalDate.now().format(DateTimeFormatter.ofPattern("yy"));
     public static String currentMonth = LocalDate.now().format(DateTimeFormatter.ofPattern("MM"));
+    public static String zeroDigitsAsMonth = "00";
     public static int currentMonthInt = Integer.parseInt(LocalDate.now().format(DateTimeFormatter.ofPattern("MM")));
     public static int currentYearInt = Integer.parseInt(LocalDate.now().format(DateTimeFormatter.ofPattern("yy")));
 
 //    Методы дата класса: возвращают различные значения для полей.
 
     public static String generateInvalidCardNumberFormat() { /* Возвращает 15 случайных цифр. */
-        String invalidCardNumberFormat = faker.numerify("###############");
+        String invalidCardNumberFormat = faker.bothify("#### #### #### ###");
         return invalidCardNumberFormat; /* Невалидное значение. */
     }
 
     public static String generateInvalidCardNumber() { /* Возвращает 16 случайных цифр, кроме значений первой и второй карты. */
-        String invalidCardNumber = faker.numerify("################");
+        String invalidCardNumber = faker.bothify("#### #### #### ####");
         for (int i = 0; invalidCardNumber == firstCardNumber || invalidCardNumber == secondCardNumber; i++) {
-            invalidCardNumber = faker.numerify("################");
+            invalidCardNumber = faker.bothify("#### #### #### ####");
         }
         return invalidCardNumber; /* Невалидное значение. */
     }
