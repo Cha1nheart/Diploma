@@ -1,6 +1,9 @@
 package ru.netology.TourPurchase.data;
 
 public class CardInfo {
+
+//    Класс нужен для тестов ответов базы данных. Конструктор тела запроса.
+
     private String number;
     private String year;
     private String month;
@@ -14,6 +17,8 @@ public class CardInfo {
         this.holder = holder;
         this.cvc = cvc;
     }
+
+//    Геттеры и сеттеры не используются, сгенерированы Lombok.
 
     public String getNumber() {
         return number;

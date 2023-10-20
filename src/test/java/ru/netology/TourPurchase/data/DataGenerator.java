@@ -14,7 +14,7 @@ public class DataGenerator {
 
     private static final Faker faker = new Faker(new Locale("ru_RU"));
 
-//    Переменные для читабельности тестов: xpath пути к кнопкам, полям и уведомлениям.
+//    Переменные для удобства чтения тестов: xpath пути к кнопкам, полям и уведомлениям.
 
     public static SelenideElement cardNumberField = $$("[class=\'input__inner\']")
             .findBy(Condition.exactText("Номер карты"))
@@ -44,7 +44,7 @@ public class DataGenerator {
     public static SelenideElement expiredCardNotification = $$("[class=\'input__sub\']")
             .findBy(Condition.exactText("Истёк срок действия карты"));
 
-//    Переменные дата класса.
+//    Переменные для работы тестов и дата класса.
 
     public static String firstCardNumber = "4444 4444 4444 4441";
     public static String secondCardNumber = "4444 4444 4444 4442";
@@ -71,16 +71,19 @@ public class DataGenerator {
 
     public static String generateYear() { /* Возвращает валидные значения для года согласно сроку действия дебетовых карт(до 5 лет). */
         String validYear;
-        int currentYearPlusExpire = currentYearInt + 5;
-        int validYearInt = faker.number().numberBetween(currentYearInt, currentYearPlusExpire);
+        int currentYearPlusExpire = currentYearInt + 4; /* Суммирует текущую дату года со сроками действия карт. */
+        int validYearInt = faker.number().numberBetween(currentYearInt, currentYearPlusExpire); /* Диапазон чисел между датой текущего года и на 4 года вперед. */
         if (validYearInt <= 9) {
             validYear = Integer.toString(validYearInt);
-            validYear = "0" + validYear;
+            validYear = "0" + validYear; /* Правка для правильного формата ввода в поле "Год". */
         } else {
             validYear = Integer.toString(validYearInt);
         }
         return validYear;
     }
+
+    public static String validYear = generateYear();
+    /* Переменная нужна для сохранения результата вызова метода. Она понадобится для метода "generateMonth()". */
 
     public static String generateInvalidMonthOrYearFormat() { /* Возвращает одну из двух цифр(0, 9). */
         String invalidYearFormat = String.valueOf(faker.number().numberBetween(0, 9));
@@ -89,17 +92,17 @@ public class DataGenerator {
 
     public static String generateInvalidYearPassed() { /* Возвращает случайный прошедший год согласно текущей дате. */
         String invalidYearPassed;
-        if (currentYearInt >= 1) {
-            int invalidYearPassedMinusOneInt = currentYearInt - 1;
-            int invalidYearPassedInt = faker.number().numberBetween(0, invalidYearPassedMinusOneInt);
+        if (currentYearInt >= 1) { /* Нельзя использовать отрицательные числа. */
+            int invalidYearPassedMinusOneInt = currentYearInt - 1; /* Прошедший год. */
+            int invalidYearPassedInt = faker.number().numberBetween(0, invalidYearPassedMinusOneInt); /* Генерация диапазона чисел согласно текущей дате. */
             if (invalidYearPassedInt <= 9) {
                 invalidYearPassed = Integer.toString(invalidYearPassedInt);
-                invalidYearPassed = "0" + invalidYearPassed;
+                invalidYearPassed = "0" + invalidYearPassed; /* Правка для правильного формата ввода в поле "Год". */
             } else {
                 invalidYearPassed = Integer.toString(invalidYearPassedInt);
             }
         } else {
-            int invalidYearPassedInt = 99;
+            int invalidYearPassedInt = 99; /* Логика метода генерирует числа от "0-98" в зависимости от текущей даты, поэтому остается только число "99". */
             invalidYearPassed = Integer.toString(invalidYearPassedInt);
         }
         return invalidYearPassed; /* Невалидное значение. */
@@ -108,37 +111,35 @@ public class DataGenerator {
     public static String generateInvalidYearExpired() { /* Возвращает год с нереальным сроком действия дебетовой карты согласно текущей дате. */
         String invalidYearExpired;
         if (currentYearInt <= 93) {
-            int currentYearPlusExpire = currentYearInt + 6;
-            int invalidYearExpiredInt = faker.number().numberBetween(currentYearPlusExpire, 99);
+            int currentYearPlusExpire = currentYearInt + 5; /* Просроченная карта с расчетом срока действия от актуальной даты. */
+            int invalidYearExpiredInt = faker.number().numberBetween(currentYearPlusExpire, 99); /* Генерация диапазона чисел даты для просроченных карт. */
             if (invalidYearExpiredInt <= 9) {
                 invalidYearExpired = Integer.toString(invalidYearExpiredInt);
-                invalidYearExpired = "0" + invalidYearExpired;
+                invalidYearExpired = "0" + invalidYearExpired; /* Правка для правильного формата ввода в поле "Год". */
             } else {
                 invalidYearExpired = Integer.toString(invalidYearExpiredInt);
             }
         } else {
-            invalidYearExpired = "00";
+            invalidYearExpired = "00"; /* Логика метода генерирует числа от "1-99" в зависимости от текущего года, поэтому остается только число "00". */
         }
         return invalidYearExpired; /* Невалидное значение. */
     }
 
-    public static String validYear = generateYear(); /* Переменная понадобится для метода ниже. */
-
     public static String generateMonth() { /* Возвращает случайный месяц согласно текущей дате. */
         String validMonth;
-        if (Integer.parseInt(validYear) > currentYearInt) {
-            int validMonthInt = faker.number().numberBetween(1, 12);
+        if (Integer.parseInt(validYear) > currentYearInt) { /* Если сгенерированная дата года получилась в будущем. */
+            int validMonthInt = faker.number().numberBetween(1, 12); /* Диапазон для поля "Месяц" равен "1" и "12". */
             if (validMonthInt <= 9) {
                 validMonth = Integer.toString(validMonthInt);
-                validMonth = "0" + validMonth;
+                validMonth = "0" + validMonth; /* Правка для правильного формата ввода в поле "Месяц". */
             } else {
                 validMonth = Integer.toString(validMonthInt);
             }
         } else {
-            int validMonthInt = faker.number().numberBetween(currentMonthInt, 12);
+            int validMonthInt = faker.number().numberBetween(currentMonthInt, 12); /* Если сгенерированная дата года совпала с текущей: диапазон чисел будет генерироваться от текущего месяца до "12". */
             if (validMonthInt <= 9) {
                 validMonth = Integer.toString(validMonthInt);
-                validMonth = "0" + validMonth;
+                validMonth = "0" + validMonth; /* Правка для правильного формата ввода в поле "Месяц". */
             } else {
                 validMonth = Integer.toString(validMonthInt);
             }
@@ -148,12 +149,12 @@ public class DataGenerator {
 
     public static String generateInvalidMonth() { /* Возвращает прошедший месяц, работает только для текущего года. */
         String invalidMonth = null;
-        if (currentMonthInt >= 2) {
-            int currentMonthMinusOneInt = currentMonthInt - 1;
-            int invalidMonthInt = faker.number().numberBetween(1, currentMonthMinusOneInt);
+        if (currentMonthInt >= 2) { /* Нельзя генерировать отрицательные значения. */
+            int currentMonthMinusOneInt = currentMonthInt - 1; /* Прошедший месяц. */
+            int invalidMonthInt = faker.number().numberBetween(1, currentMonthMinusOneInt); /* Диапазон чисел от "1" до числа даты последнего прошедшего месяца. */
             if (invalidMonthInt <= 9) {
                 invalidMonth = Integer.toString(invalidMonthInt);
-                invalidMonth = "0" + invalidMonth;
+                invalidMonth = "0" + invalidMonth; /* Правка для правильного формата ввода в поле "Месяц". */
             } else {
                 invalidMonth = Integer.toString(invalidMonthInt);
             }
@@ -161,7 +162,7 @@ public class DataGenerator {
         return invalidMonth; /* Невалидное значение. */
     }
 
-    public static String generateHolder() { /* Возвращает случайное имя и фамилию, бывают недочеты: женское имя и мужская фамилия. */
+    public static String generateHolder() { /* Возвращает случайное имя и фамилию. Часто ошибается со склонениями: не совпадают пол имени и фамилии. */
         String nameAndSurname = faker.name().firstName() + " " + faker.name().lastName();
         return nameAndSurname;
     }

@@ -39,7 +39,7 @@ class TourPurchaseTest {
         tourPurchaseButton.click();
         cardNumberField.setValue(firstCardNumber);
         monthField.setValue(generateMonth());
-        yearField.setValue(generateYear());
+        yearField.setValue(validYear); /* Переменная "validYear" сохраняет результат вызова метода "generateYear()". Она понадобится для метода "generateMonth()". */
         holderField.setValue(generateHolder());
         cvcField.setValue(generateCVC());
         continueButton.click();
@@ -54,7 +54,7 @@ class TourPurchaseTest {
         tourPurchaseButton.click();
         cardNumberField.setValue(secondCardNumber);
         monthField.setValue(generateMonth());
-        yearField.setValue(generateYear());
+        yearField.setValue(validYear);
         holderField.setValue(generateHolder());
         cvcField.setValue(generateCVC());
         continueButton.click();
@@ -67,7 +67,7 @@ class TourPurchaseTest {
         tourPurchaseButton.click();
         cardNumberField.setValue(generateInvalidCardNumberFormat());
         monthField.setValue(generateMonth());
-        yearField.setValue(generateYear());
+        yearField.setValue(validYear);
         holderField.setValue(generateHolder());
         cvcField.setValue(generateCVC());
         continueButton.click();
@@ -80,7 +80,7 @@ class TourPurchaseTest {
         tourPurchaseButton.click();
         cardNumberField.setValue(firstCardNumber);
         monthField.setValue(generateInvalidMonthOrYearFormat());
-        yearField.setValue(generateYear());
+        yearField.setValue(validYear);
         holderField.setValue(generateHolder());
         cvcField.setValue(generateCVC());
         continueButton.click();
@@ -89,11 +89,11 @@ class TourPurchaseTest {
 
     @Test
     @DisplayName("Should decline invalid input as 00 for the month field") /* Поле "Месяц" заполнено нулями. */
-    void shouldDeclineInvalidMonthInput() {
+    void shouldDeclineInvalidMonthInput() { /* Тест проходит только в случае если сгенерировался текущий год(переменная "validYear"). */
         tourPurchaseButton.click();
         cardNumberField.setValue(firstCardNumber);
         monthField.setValue(zeroDigitsAsMonth);
-        yearField.setValue(generateYear());
+        yearField.setValue(validYear);
         holderField.setValue(generateHolder());
         cvcField.setValue(generateCVC());
         continueButton.click();
@@ -132,7 +132,7 @@ class TourPurchaseTest {
         tourPurchaseButton.click();
         cardNumberField.setValue(generateInvalidCardNumber());
         monthField.setValue(generateMonth());
-        yearField.setValue(generateYear());
+        yearField.setValue(validYear);
         holderField.setValue(generateHolder());
         cvcField.setValue(generateCVC());
         continueButton.click();
@@ -184,7 +184,7 @@ class TourPurchaseTest {
         tourPurchaseButton.click();
         cardNumberField.setValue(firstCardNumber);
         monthField.setValue(generateMonth());
-        yearField.setValue(generateYear());
+        yearField.setValue(validYear);
         holderField.setValue(generateInvalidHolder());
         cvcField.setValue(generateCVC());
         continueButton.click();
@@ -200,7 +200,7 @@ class TourPurchaseTest {
 
         CardInfo cardInfo = new CardInfo(
                 firstCardNumber,
-                generateYear(),
+                validYear,
                 generateMonth(),
                 generateHolder(),
                 generateCVC()
@@ -223,7 +223,7 @@ class TourPurchaseTest {
 
         CardInfo cardInfo = new CardInfo(
                 secondCardNumber,
-                generateYear(),
+                validYear,
                 generateMonth(),
                 generateHolder(),
                 generateCVC()
@@ -249,7 +249,7 @@ class TourPurchaseTest {
 
         CardInfo cardInfo = new CardInfo(
                 generateInvalidCardNumber(),
-                generateYear(),
+                validYear,
                 generateMonth(),
                 generateHolder(),
                 generateCVC()
