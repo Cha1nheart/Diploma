@@ -89,7 +89,7 @@ public class CreditTourPurchaseTest {
 
     @Test
     @DisplayName("Should decline invalid input as 00 for the month field") /* Поле "Месяц" заполнено нулями. */
-    void shouldDeclineInvalidMonthInput() { /* Тест проходит только в случае если сгенерировался текущий или будущий год(переменная "validYear"). */
+    void shouldDeclineInvalidMonthInput() {
         creditTourPurchaseButton.click();
         cardNumberField.setValue(firstCardNumber);
         monthField.setValue(zeroDigitsAsMonth);
