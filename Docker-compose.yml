@@ -7,22 +7,21 @@ services:
     volumes:
       - ./data:/var/lib/mysql/
     environment:
-    - MYSQL_RANDOM_ROOT_PASSWORD=yes
-    - MYSQL_DATABASE=app
-    - MYSQL_USER=app
-    - MYSQL_PASSWORD=pass
+      - MYSQL_RANDOM_ROOT_PASSWORD=yes
+      - MYSQL_DATABASE=app
+      - MYSQL_USER=app
+      - MYSQL_PASSWORD=pass
 
-  postgres:
-    image: postgres:latest
+  postgresql:
+    image: postgres
     ports:
       - '5432:5432'
     volumes:
-    - ./data:/var/lib/postgresql/
+      - ./data:/var/lib/postgresql/
     environment:
-      - POSTGRESQL_RANDOM_ROOT_PASSWORD=yes
-      - POSTGRESQL_DATABASE=app
-      - POSTGRESQL_USER=app
-      - POSTGRESQL_PASSWORD=pass
+      - POSTGRES_DB=app
+      - POSTGRES_USER=app
+      - POSTGRES_PASSWORD=pass
 
   node:
     image: node:latest

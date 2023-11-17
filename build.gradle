@@ -30,6 +30,9 @@ dependencies {
     implementation 'com.fasterxml.jackson.core:jackson-databind:2.15.2'
     testImplementation 'io.qameta.allure:allure-selenide:2.20.1'
     testImplementation 'junit:junit:4.13.1'
+    testImplementation 'mysql:mysql-connector-java:8.0.28'
+    implementation 'org.postgresql:postgresql:42.6.0'
+    testImplementation 'commons-dbutils:commons-dbutils:1.7'
 }
 
 test {

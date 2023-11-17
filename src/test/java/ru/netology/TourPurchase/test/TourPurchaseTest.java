@@ -6,10 +6,11 @@ import io.qameta.allure.selenide.AllureSelenide;
 import io.restassured.http.ContentType;
 import org.junit.jupiter.api.*;
 import ru.netology.TourPurchase.data.CardInfo;
+import ru.netology.TourPurchase.data.SQLhelper;
 
 import java.time.Duration;
 
-import static com.codeborne.selenide.Selenide.open;
+import static com.codeborne.selenide.Selenide.*;
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.equalTo;
 import static ru.netology.TourPurchase.data.DataGenerator.*;
@@ -21,21 +22,30 @@ class TourPurchaseTest {
     static void setUpAll() {
         SelenideLogger.addListener("allure", new AllureSelenide());
     }
-    @AfterAll
-    static void tearDownAll() {
-        SelenideLogger.removeListener("allure");
-    }
+
     @BeforeEach
     void setup() {
         open("http://localhost:8080");
     }
 
-//    Обычная покупка тура.
-//    Позитивный сценарий проверки.
+    @AfterEach
+    void clearDataBaseTabs() {
+        SQLhelper.MySQLcleanDataBase(); /* Для работы через MySQL. */
+//        SQLhelper.PostgreSQLcleanDataBase(); /* Для работы через PostgreSQL. */
+        /* При необходимости работы через PostgreSQL закомментируйте 33 строку и, соответственно, уберите комментарий с 34 строки кода. */
+    }
+
+    @AfterAll
+    static void tearDownAll() {
+        SelenideLogger.removeListener("allure");
+    }
+
+//    Обычные покупки тура.
+//    Позитивные сценарии проверки.
 
     @Test
     @DisplayName("Should successfully approve operation for the first card") /* Обычная проверка со стандартными данными ввода. */
-    void shouldSuccessfullyApproveOperationFirstCard() {
+    void shouldSuccessfullyApproveOperationFirstCard() { /* Проверка уведомления и внесения данных в БД. */
         tourPurchaseButton.click();
         cardNumberField.setValue(firstCardNumber);
         monthField.setValue(generateMonth());
@@ -44,25 +54,27 @@ class TourPurchaseTest {
         cvcField.setValue(generateCVC());
         continueButton.click();
         approvedByTheBankNotification.shouldBe(Condition.visible, Duration.ofSeconds(20));
+        var purchaseStatus = SQLhelper.getStatusFromPaymentMySQL();
+        Assertions.assertEquals("APPROVED", purchaseStatus);
     }
 
-//    Негативные сценарии проверки.
-
     @Test
-    @DisplayName("Should decline operation for the second card") /* Банк должен отклонить операцию второй карты. */
-    void shouldSuccessfullyApproveOperationForSecondCard() {     /* Ответ БД - отказ, но уведомление сообщает об успехе проведенной операции. */
+    @DisplayName("Should successfully approve operation for the first card(PostgreSQL)") /* Обычная проверка со стандартными данными ввода. */
+    void shouldSuccessfullyApproveOperationFirstCardPostgreSQL() { /* Проверка уведомления и внесения данных в БД. */
         tourPurchaseButton.click();
-        cardNumberField.setValue(secondCardNumber);
+        cardNumberField.setValue(firstCardNumber);
         monthField.setValue(generateMonth());
         yearField.setValue(validYear);
         holderField.setValue(generateHolder());
         cvcField.setValue(generateCVC());
         continueButton.click();
-        declinedByTheBankNotification.shouldBe(Condition.visible, Duration.ofSeconds(20));
+        approvedByTheBankNotification.shouldBe(Condition.visible, Duration.ofSeconds(20));
+        var purchaseStatus = SQLhelper.getStatusFromPaymentPostgreSQL();
+        Assertions.assertEquals("APPROVED", purchaseStatus);
     }
 
     @Test
-    @DisplayName("Should decline invalid format for the card number field") /* Поле "Карта" не заполнено полностью. */
+    @DisplayName("Should decline invalid format for the card number field") /* Поле "Карта" не заполнено полностью, проверка уведомления. */
     void shouldDeclineInvalidCardFormat() {
         tourPurchaseButton.click();
         cardNumberField.setValue(generateInvalidCardNumberFormat());
@@ -75,7 +87,7 @@ class TourPurchaseTest {
     }
 
     @Test
-    @DisplayName("Should decline invalid format for the month field") /* Поле "Месяц" заполнено вне формата(две цифры). */
+    @DisplayName("Should decline invalid format for the month field") /* Поле "Месяц" заполнено вне формата(две цифры), проверка уведомления. */
     void shouldDeclineInvalidMonthFormat() {
         tourPurchaseButton.click();
         cardNumberField.setValue(firstCardNumber);
@@ -88,20 +100,7 @@ class TourPurchaseTest {
     }
 
     @Test
-    @DisplayName("Should decline invalid input as 00 for the month field") /* Поле "Месяц" заполнено нулями. */
-    void shouldDeclineInvalidMonthInput() {
-        tourPurchaseButton.click();
-        cardNumberField.setValue(firstCardNumber);
-        monthField.setValue(zeroDigitsAsMonth);
-        yearField.setValue(validYear);
-        holderField.setValue(generateHolder());
-        cvcField.setValue(generateCVC());
-        continueButton.click();
-        wrongFormatNotification.shouldBe(Condition.visible, Duration.ofSeconds(20));
-    }
-
-    @Test
-    @DisplayName("Should decline invalid format for the year field") /* Поле "Год" заполнено вне формата(две цифры). */
+    @DisplayName("Should decline invalid format for the year field") /* Поле "Год" заполнено вне формата(две цифры), проверка уведомления. */
     void shouldDeclineInvalidYearFormat() {
         tourPurchaseButton.click();
         cardNumberField.setValue(firstCardNumber);
@@ -114,7 +113,7 @@ class TourPurchaseTest {
     }
 
     @Test
-    @DisplayName("Should decline invalid format for the CVC/CVV code field") /* Поле "CVC/CVV" не заполнено полностью. */
+    @DisplayName("Should decline invalid format for the CVC/CVV code field") /* Поле "CVC/CVV" не заполнено полностью, проверка уведомления. */
     void shouldDeclineInvalidCvcFormat() {
         tourPurchaseButton.click();
         cardNumberField.setValue(firstCardNumber);
@@ -127,7 +126,7 @@ class TourPurchaseTest {
     }
 
     @Test
-    @DisplayName("Should decline invalid card") /* Неприемлемые номера карты - банк отказывает в проведении операции. */
+    @DisplayName("Should decline invalid card") /* Неприемлемые номера карты - банк отказывает в проведении операции, проверка уведомления. */
     void shouldDeclineInvalidCard() {
         tourPurchaseButton.click();
         cardNumberField.setValue(generateInvalidCardNumber());
@@ -140,7 +139,7 @@ class TourPurchaseTest {
     }
 
     @Test
-    @DisplayName("Should decline invalid month") /* Срок действия карты истек - прошедший месяц. */
+    @DisplayName("Should decline invalid month") /* Срок действия карты истек - прошедший месяц, проверка уведомления. */
     void shouldDeclineInvalidMonth() {
         tourPurchaseButton.click();
         cardNumberField.setValue(firstCardNumber);
@@ -153,7 +152,7 @@ class TourPurchaseTest {
     }
 
     @Test
-    @DisplayName("Should decline because of the year is passed") /* Срок действия карты истек - прошедший год. */
+    @DisplayName("Should decline because of the year is passed") /* Срок действия карты истек - прошедший год, проверка уведомления. */
     void shouldDeclineInvalidYearPassed() {
         tourPurchaseButton.click();
         cardNumberField.setValue(firstCardNumber);
@@ -166,7 +165,7 @@ class TourPurchaseTest {
     }
 
     @Test
-    @DisplayName("Should decline unreal because of unreal expiration year") /* Истекший срок действия карты - год. */
+    @DisplayName("Should decline operation because of unreal expiration year") /* Истекший срок действия карты - год, проверка уведомления. */
     void shouldDeclineInvalidYearExpired() {
         tourPurchaseButton.click();
         cardNumberField.setValue(firstCardNumber);
@@ -178,8 +177,39 @@ class TourPurchaseTest {
         invalidCardExpirationDateNotification.shouldBe(Condition.visible, Duration.ofSeconds(20));
     }
 
+//    Негативные сценарии проверки.
+
     @Test
-    @DisplayName("Should decline invalid input in owner field ") /* Невалидные данные в поле "Владелец"(цифры, символы). */
+    @DisplayName("Should decline operation for the second card") /* Банк должен отклонить операцию второй карты. */
+    void shouldSuccessfullyApproveOperationForSecondCard() { /* Проверка уведомления и внесения данных в БД. */
+        tourPurchaseButton.click();
+        cardNumberField.setValue(secondCardNumber);
+        monthField.setValue(generateMonth());
+        yearField.setValue(validYear);
+        holderField.setValue(generateHolder());
+        cvcField.setValue(generateCVC());
+        continueButton.click();
+        declinedByTheBankNotification.shouldBe(Condition.visible, Duration.ofSeconds(20));
+        var purchaseStatus = SQLhelper.getStatusFromPaymentMySQL();
+        Assertions.assertEquals("APPROVED", purchaseStatus);
+    }
+
+    @Test
+    @DisplayName("Should get the same amount of purchase for the first card in DB") /* Сумма покупки тура должна совпадать с числом "45000". */
+    void shouldGetSameAmountOfPurchaseFromDB() { /* Проверка внесения данных в БД. */
+        tourPurchaseButton.click();
+        cardNumberField.setValue(firstCardNumber);
+        monthField.setValue(generateMonth());
+        yearField.setValue(validYear);
+        holderField.setValue(generateHolder());
+        cvcField.setValue(generateCVC());
+        continueButton.click();
+        var purchaseAmount = SQLhelper.getAmountFromPaymentMySQL();
+        Assertions.assertEquals(45000, purchaseAmount);
+    }
+
+    @Test
+    @DisplayName("Should decline invalid input in owner field ") /* Невалидные данные в поле "Владелец"(цифры, символы), проверка уведомления. */
     void shouldDeclineInvalidInputOwner() {
         tourPurchaseButton.click();
         cardNumberField.setValue(firstCardNumber);
@@ -191,7 +221,51 @@ class TourPurchaseTest {
         declinedByTheBankNotification.shouldBe(Condition.visible, Duration.ofSeconds(20));
     }
 
-//    Сценарии проверки ответов базы данных.
+    @Test
+    @DisplayName("Should decline invalid input as 00 for the month field") /* Поле "Месяц" заполнено нулями, проверка уведомления. */
+    void shouldDeclineInvalidMonthInput() {
+        tourPurchaseButton.click();
+        cardNumberField.setValue(firstCardNumber);
+        monthField.setValue(zeroDigitsAsMonth);
+        yearField.setValue(validYear);
+        holderField.setValue(generateHolder());
+        cvcField.setValue(generateCVC());
+        continueButton.click();
+        wrongFormatNotification.shouldBe(Condition.visible, Duration.ofSeconds(20));
+    }
+
+//    Две негативных проверки через подключение к PostgreSQL.
+
+    @Test
+    @DisplayName("Should decline operation for the second card(PostgreSQL)") /* Банк должен отклонить операцию второй карты. */
+    void shouldSuccessfullyApproveOperationForSecondCardPostgreSQL() { /* Проверка уведомления и внесения данных в БД. */
+        tourPurchaseButton.click();
+        cardNumberField.setValue(secondCardNumber);
+        monthField.setValue(generateMonth());
+        yearField.setValue(validYear);
+        holderField.setValue(generateHolder());
+        cvcField.setValue(generateCVC());
+        continueButton.click();
+        declinedByTheBankNotification.shouldBe(Condition.visible, Duration.ofSeconds(20));
+        var purchaseStatus = SQLhelper.getStatusFromPaymentPostgreSQL();
+        Assertions.assertEquals("APPROVED", purchaseStatus);
+    }
+
+    @Test
+    @DisplayName("Should get the same amount of purchase for the first card in DB(PostgreSQL)") /* Сумма покупки тура должна совпадать с числом "45000". */
+    void shouldGetSameAmountOfPurchaseFromDBPostgreSQL() { /* Проверка внесения данных в БД. */
+        tourPurchaseButton.click();
+        cardNumberField.setValue(firstCardNumber);
+        monthField.setValue(generateMonth());
+        yearField.setValue(validYear);
+        holderField.setValue(generateHolder());
+        cvcField.setValue(generateCVC());
+        continueButton.click();
+        var purchaseAmount = SQLhelper.getAmountFromPaymentPostgreSQL();
+        Assertions.assertEquals(45000, purchaseAmount);
+    }
+
+//    Проверки API.
 //    Позитивные сценарии.
 
     @Test
