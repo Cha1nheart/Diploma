@@ -10,20 +10,29 @@ import java.sql.SQLException;
 
 public class SQLhelper {
 
+//    Переменные: URL для MySQl, URL для PostgreSQL, имя пользователя и пароль.
+
+    private static final String MySQLdbURL = System.getProperty("datasource.MySQLdbURL");
+    private static final String PostgreSQLdbURL = System.getProperty("datasource.PostgreSQLdbURL");
+    private static final String username = System.getProperty("username");
+    private static final String password = System.getProperty("password");
+
     private static QueryRunner runner = new QueryRunner();
 
     private SQLhelper() {
     }
 
-    private static Connection getConnToMySQLdb() throws SQLException {
-        return DriverManager.getConnection("jdbc:mysql://localhost:3306/app", "app", "pass");
+//    Методы создания соединений.
+
+    private static Connection getConnToMySQLdb() throws SQLException { /* MySQL соединение. */
+        return DriverManager.getConnection(MySQLdbURL, username, password);
     }
 
-    private static Connection getConnToPostgreSQLdb() throws SQLException {
-        return DriverManager.getConnection("jdbc:postgresql://localhost:5432/app", "app", "pass");
+    private static Connection getConnToPostgreSQLdb() throws SQLException { /* PostgreSQL соединение. */
+        return DriverManager.getConnection(PostgreSQLdbURL, username, password);
     }
 
-//    MySQL requests методы при обычной покупке тура.
+//    MySQL методы при обычной покупке тура.
 
     @SneakyThrows
     public static String getStatusFromPaymentMySQL() { /* Статус */
@@ -43,7 +52,7 @@ public class SQLhelper {
         return result;
     }
 
-//    MySQL requests методы при покупке тура в кредит.
+//    MySQL методы при покупке тура в кредит.
 
     @SneakyThrows
     public static String getStatusFromCreditRequestMySQL() { /* Статус */
@@ -65,7 +74,7 @@ public class SQLhelper {
 
 
 
-//    PostgreSQL requests методы при обычной покупке тура.
+//    PostgreSQL методы при обычной покупке тура.
     @SneakyThrows
     public static String getStatusFromPaymentPostgreSQL() { /* Статус */
         Thread.sleep(10000);
@@ -84,7 +93,7 @@ public class SQLhelper {
         return result;
     }
 
-//    PostgreSQL requests методы при покупке тура в кредит.
+//    PostgreSQL методы при покупке тура в кредит.
 
     @SneakyThrows
     public static String getStatusFromCreditRequestPostgreSQL() { /* Статус */
